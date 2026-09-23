@@ -2,6 +2,8 @@ import streamlit as st
 from groq import Groq
 import random
 import json
+import time
+
 # --------------------------------------------------
 # PAGE CONFIG
 # --------------------------------------------------
@@ -79,7 +81,7 @@ If the user asks anything unrelated to rentals,
 properties, houses, flats, PGs or accommodation,
 reply ONLY:
 
-"Meow! 🐾 I am SOLACE and can only help with rental properties, flats, PGs, accommodation, and rent-related queries."
+Meow! 🐾 I am SOLACE and can only help with rental properties, flats, PGs, accommodation, and rent-related queries.
 
 Always try to collect:
 
@@ -97,10 +99,10 @@ Be helpful, friendly and concise.
 """
 
 # --------------------------------------------------
-# API KEY
+# GROQ API KEY
 # --------------------------------------------------
 
-api_key = "AQ.Ab8RN6KPhFZHz6CyOsC3KYYuQpglBMNyS8J_WYHsPCtEBqkEMQ"
+api_key = "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"
 
 # --------------------------------------------------
 # SESSION STATE
@@ -323,9 +325,7 @@ if prompt:
 
     category = detect_category(prompt)
 
-    st.info(
-        f"Category Detected: {category}"
-    )
+    st.info(f"Category Detected: {category}")
 
     property_details = f"""
 Property Preferences
@@ -342,38 +342,44 @@ User Question:
 
     try:
 
-        client = genai.Client(
+        client = Groq(
             api_key=api_key
         )
 
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=property_details,
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_INSTRUCTION,
-                temperature=0.5,
-                max_output_tokens=800
-            )
+        completion = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {
+                    "role": "system",
+                    "content": SYSTEM_INSTRUCTION
+                },
+                {
+                    "role": "user",
+                    "content": property_details
+                }
+            ],
+            temperature=0.5,
+            max_tokens=800
         )
 
-        answer = response.text
+        answer = completion.choices[0].message.content
 
         if st.session_state.first_response:
-            answer = "Meow! 🐾 " + answer
+            if not answer.startswith("Meow! 🐾"):
+                answer = "Meow! 🐾 " + answer
             st.session_state.first_response = False
 
         with st.chat_message("assistant"):
 
             placeholder = st.empty()
+
             full_response = ""
 
             for word in answer.split():
 
                 full_response += word + " "
 
-                placeholder.markdown(
-                    full_response
-                )
+                placeholder.markdown(full_response)
 
                 time.sleep(0.01)
 
