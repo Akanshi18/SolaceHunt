@@ -103,7 +103,7 @@ Be helpful, friendly and concise.
 # API KEY
 # --------------------------------------------------
 
-api_key = "AQ.Ab8RN6KdLDfzJMCq8bOJ3-G8XTkqVVZ8ykZVCq_r0PZy3GGqpg"
+api_key = "AQ.Ab8RN6KPhFZHz6CyOsC3KYYuQpglBMNyS8J_WYHsPCtEBqkEMQ"
 
 # --------------------------------------------------
 # SESSION STATE
