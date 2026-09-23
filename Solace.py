@@ -1,9 +1,5 @@
 import streamlit as st
-import json
-import random
-import time
-from google import genai
-from google.genai import types
+from groq import Groq
 
 # --------------------------------------------------
 # PAGE CONFIG
